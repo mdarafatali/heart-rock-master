@@ -5,7 +5,8 @@ const searchSongs = () =>{
         alert("Searh Can't Be Blank")
     }
     else {
-        fetch(`https://api.lyrics.ovh/suggest/${inputValue}`)
+        const url = `https://api.lyrics.ovh/suggest/${inputValue}`
+        fetch(url)
             .then(res => res.json())
             .then(data => displaySong(data.data))
     }
@@ -14,7 +15,8 @@ const searchSongs = () =>{
 
 const displaySong = (songs) =>{
     const songsContainer = document.getElementById('songs-container')
-    console.log(songs);
+    songsContainer.innerHTML = ' ';
+    // console.log(songs);
     songs.forEach(song =>
         {
     const songDiv = document.createElement('div');
@@ -28,14 +30,24 @@ const displaySong = (songs) =>{
         <source src="${song.preview}" type="audio/mpeg">
         </audio>
         <div class="col-md-3 text-md-right text-center">
-        <button onclick = "getLyric('${song.title}', '${song.artist.name}')" class="btn btn-success">Get Lyrics</button>
+        <button onclick = "getLyric('${song.artist.name}', '${song.title}')" class="btn btn-success">Get Lyrics</button>
         </div>`
     songsContainer.appendChild(songDiv);
 
     })
 }
 
-const getLyric = (title, artist) =>{
-    console.log(title, artist);
+const getLyric = (artist, title) =>{
+    console.log(artist, title)
+    const url = `https://api.lyrics.ovh/v1/${artist}/${title}`
+    console.log(url)
+    fetch(url)
+    .then(res => res.json())
+    .then(data => getLyrics(data.lyrics))
 
+}
+
+const getLyrics = (lyric) => {
+    const lyricDiv = document.getElementById('lyricDiv')
+    lyricDiv.innerText = lyric;
 }
